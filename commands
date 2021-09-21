@@ -1,0 +1,215 @@
+module.exports = ({
+ name: "clear",
+ code: `
+$onlyPerms[managemessages;need "managemessages" permission]
+$clear[$message] **$message messages deleted correctly**
+$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]` 
+}) 
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+ name: "eval",
+ code: `$eval[$message]
+ $onlyForIDs[$botOwnerID;Lo sentimos, solo los developers pueden usar este evaluador de código.]
+ $onlyif[$checkContains[$message;$clientToken]==false;you are trying to get my Token?]
+ $onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]
+`
+}) 
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+    name: "lock",
+    usage: "lock <channel>",
+    description: "Locks the specified channel or will lock the current channel.",
+    category: "Moderation",
+    code: `$modifyChannelPerms[$get[chan];-sendmessages;$guildID]
+Successfully locked <#$get[chan]>!!
+$onlyIf[$get[chan]!=undefined;**⛔ Please specify a valid channel!!**]
+$let[chan;$replaceText[$replaceText[$checkCondition[$message==];true;$channelID];false;$findServerChannel[$message;no]]]
+$onlyPerms[managechannels;**⛔ You dont have required perms to do it!!**]
+$onlyBotPerms[managechannels;sendmessages;manageroles;viewchannel;**I don't have the perms to do it!!**]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]`
+});
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+name: "nuke",
+code: `$deleteChannels[$channelID]
+$channelSendMessage[$cloneChannel[$channelID;yes];{title:Nuked channel $image[https://tenor.com/view/explosion-boom-explode-gif-17383346]} {color:RANDOM}]
+$onlyPerms[admin;Missing Permission: \`ADMINISTRATOR\`]
+$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]` 
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+    name: "slowmode",
+    aliases: "sm",
+    usage: "slowmode (time)",
+    code: `$slowMode[$channelID;$get[set]]
+Successfully set the channel slowmode to **\`$replaceText[$replaceText[$checkCondition[$get[slow]==];true;0 second];false;$get[slow]]\`**!!
+$let[slow;$humanizems[$get[time]]]
+$onlyIf[$get[time]<=$math[3600000*6];**⛔ Slowmode must be less than or equal to 6h!!**]
+$let[time;$math[$replaceText[$replaceText[$replaceText[$get[set];s;*1000];m;*60000];h;*3600000]]]
+$onlyIf[$isNumber[$get[mode]]==true;**⛔ Please provide a valid number!! Also the slowmode must be less than or equal to 6h!!**]
+$let[mode;$replaceText[$replaceText[$replaceText[$get[set];m;];h;];s;]]
+$let[set;$replaceText[$replaceText[$isNumber[$get[sm]];true;$get[sm]s];false;$get[sm]]]
+$let[sm;$replaceText[$replaceText[$checkCondition[$message==];true;0s];false;$message]]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]`
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+    name: "unlock",
+    usage: "unlock <channel>",
+    description: "Unlocks the specified channel or will unlock the current channel.",
+    category: "Moderation",
+    code: `$modifyChannelPerms[$get[chan];+sendmessages;$guildID]
+Successfully unlocked <#$get[chan]>!!
+$onlyIf[$get[chan]!=undefined;**⛔ Please specify a valid channel!!**]
+$let[chan;$replaceText[$replaceText[$checkCondition[$message==];true;$channelID];false;$findServerChannel[$message;no]]]
+$onlyPerms[managechannels;**⛔ You dont have required perms to do it!!**]
+$onlyBotPerms[managechannels;sendmessages;manageroles;viewchannel;**I don't have the perms to do it!!**]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]`
+});
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+name: "avatar",
+code: `
+    $description[
+<@$findMember[$message]>'s avatar]
+    $image[$userAvatar[$findMember[$message]]]
+    $onlyIf[$checkContains[$channelType;text;news]==true;]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]`
+});
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+ name: "cry",
+ code: `$title[$username cry someone give him a hug]
+ $image[$jsonRequest[https://nekos.best/api/v1/cry; url; An error occurred]]
+ $color[RANDOM]
+ $footer[$addTimestamp]
+ $onlyIf[$mentioned[1]!=$clientID;You are free to cry anyone but me :v]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]` 
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+ name: "hug",
+ code: `$title[$username hugs $username[$mentioned[1]]!]
+ $image[$jsonRequest[https://nekos.best/api/v1/hug; url;An error occurred]]
+ $color[RANDOM]
+ $footer[$addTimestamp]
+$argsCheck[1;Mention the person you want to hug]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]`
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+ name: "kiss",
+ code: `$title[$username kiss $username[$mentioned[1]]! what a nice kiss]
+ $image [$jsonRequest [https://nekos.best/api/v1/kiss; url; An error occurred]]
+ $color[RANDOM]
+ $footer[$addTimestamp]
+ $onlyIf[$mentioned[1]!=$clientID;You are free to kiss anyone but me :v]
+ $argsCheck[1;Mention someone to kiss]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]` 
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+  name: "meme",
+  code: `$title[meme]
+  $image[https://ctk-api.herokuapp.com/meme/$random[1;500]]
+  $footer[memes random]
+  $addTimestamp $onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]` 
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+ name: "pat",
+ code: `$title[$username pats $username[$mentioned[1]]! There there]
+ $image[$jsonRequest[https://nekos.best/api/v1/pat; url;An error occurred]]
+ $color[RANDOM]
+ $footer[$addTimestamp]
+ $argsCheck[1;You need to mention someone in order to pat them]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]` 
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+ name: "poke",
+ code: `$title[$username boops $username[$mentioned[1]] .-.]
+ $image[$jsonRequest[https://nekos.best/api/v1/poke; url;An error occurred]]
+ $color[RANDOM]
+ $footer[$addTimestamp]
+ $argsCheck[1;Tag someone to poke]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]` 
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+	name: 'say',
+	code: `$message
+  $deletecommand
+  $onlyif[$checkContains[$message;@everyone;@here;<@&]==false;are you trying to ping? you will receive a warn]
+  $argsCheck[>1;Insert something for the bot to say]
+  $onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]`
+})
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+    name: "serverinfo",
+    usage: "`prefix serverinfo`",
+    description: "Shows the info of the current server",
+    aliases: "si",
+    category: "General",
+    code: `$title[Info of $serverName]
+$footer[Requested by $userTag[$authorID];$authorAvatar]
+$addTimestamp
+$color[RANDOM]
+$addField[
+**Roles**[$roleCount];**Highest Role:** <@&$highestServerRole>
+**Lowest Role:** <@&$lowestServerRole>;yes]
+$addField[**Prefixes**;$getServerVar[Prefix];yes]
+$addField[**Members**[$membersCount];**Humans:** 
+$math[$membersCount-$botCount]
+**Bots:** $botCount;yes]
+$addField[**Emoji**[$emojiCount[all]];**Normal:** $emojiCount[normal]
+**Animated:** $emojiCount[animated];yes]
+$addField[**Info**;**Name:** $serverName
+**Server ID:** $guildID
+**Media Content Filter:** $serverContentFilter
+**Verification Level:** $serverVerificationLevel
+**Region:** $toLocaleUppercase[$serverRegion]
+**Voice:** $serverPreferredLocale
+**Boost Count:** $serverBoostCount
+**Boost Tier:** $serverBoostLevel;yes]
+$addField[**Channels**[$channelCount];
+**Category:** $channelCount[category]
+**Text:** $channelCount[text]
+**Voice:** $channelCount[voice];yes]
+$addField[**Features**;$replaceText[$replaceText[$checkCondition[$serverFeatures!=];true;$serverFeatures[$guildID;]];false;NaN];yes]
+$addField[**Owner**;$userTag[$ownerID];yes]
+$suppressErrors[An Error Occurred!!]`
+});
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = ({
+ name: "slap",
+ code: `$title[$username slaps $username[$mentioned[1]]! Now that's a lot of damage]
+ $image [$jsonRequest [https://nekos.best/api/v1/slap; url; An error occurred]]
+ $color[RANDOM]
+ $footer[$addTimestamp]
+ $onlyIf[$mentioned[1]!=$clientID;You are free to slap anyone but me :v]
+ $argsCheck[1;Mention someone to slap]$onlyIf[$getGlobalUserVar[Blacklist;$authorID]==false;**⛔ You are blacklisted**]` 
+})
